@@ -7,13 +7,19 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class OrderItemResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'food' => [
+                'id' => $this->food->id,
+                'name' => $this->food->name,
+                'price' => $this->food->price,
+                'category' => $this->food->category,
+            ],
+            'quantity' => $this->quantity,
+            'price' => $this->price,
+            'subtotal' => $this->subtotal,
+        ];
     }
 }
