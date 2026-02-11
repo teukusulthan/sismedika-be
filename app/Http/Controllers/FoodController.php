@@ -2,47 +2,57 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreFoodRequest;
+use App\Http\Requests\UpdateFoodRequest;
+use App\Http\Resources\FoodResource;
+use App\Models\Food;
+use App\Services\FoodService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class FoodController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    protected FoodService $foodService;
+
+    public function __construct(FoodService $foodService)
     {
-        //
+        $this->foodService = $foodService;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function index(Request $request)
     {
-        //
+        $perPage = $request->query('per_page', 10);
+
+        $foods = $this->foodService->paginate((int) $perPage);
+
+        return FoodResource::collection($foods);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function store(StoreFoodRequest $request): FoodResource
     {
-        //
+        $food = $this->foodService->create($request->validated());
+
+        return new FoodResource($food);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function show(Food $food): FoodResource
     {
-        //
+        return new FoodResource($food);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function update(UpdateFoodRequest $request, Food $food): FoodResource
     {
-        //
+        $updated = $this->foodService->update($food, $request->validated());
+
+        return new FoodResource($updated);
+    }
+
+    public function destroy(Food $food): JsonResponse
+    {
+        $this->foodService->delete($food);
+
+        return response()->json([
+            'message' => 'Food deleted successfully.',
+        ]);
     }
 }
