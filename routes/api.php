@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FoodController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\RestaurantTableController;
+
 
 Route::prefix('v1')->group(function () {
 
@@ -21,5 +23,7 @@ Route::prefix('v1')->group(function () {
         Route::post('/orders/open', [OrderController::class, 'open']);
         Route::post('/orders/{order}/items', [OrderController::class, 'addItem']);
         Route::post('/orders/{order}/close', [OrderController::class, 'close']);
+        Route::get('/restaurant-tables', [RestaurantTableController::class, 'index']);
+
     });
 });
