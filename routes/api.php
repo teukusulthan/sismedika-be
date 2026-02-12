@@ -24,6 +24,7 @@ Route::prefix('v1')->group(function () {
         Route::post('/orders/{order}/items', [OrderController::class, 'addItem']);
         Route::post('/orders/{order}/close', [OrderController::class, 'close']);
         Route::get('/restaurant-tables', [RestaurantTableController::class, 'index']);
+        Route::delete('/orders/{order}/items/{item}', [OrderController::class, 'removeItem']);
 
     });
 });

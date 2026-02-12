@@ -7,6 +7,7 @@ use App\Http\Requests\AddOrderItemRequest;
 use App\Http\Requests\CloseOrderRequest;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
+use App\Models\OrderItem;
 use App\Services\OrderService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -29,12 +30,15 @@ class OrderController extends Controller
         return OrderResource::collection($orders);
     }
 
-    public function show(Order $order): OrderResource
-    {
-        $order->load(['items.food', 'table', 'user']);
+public function show(Order $order)
+{
+    $order->load('items.food');
 
-        return new OrderResource($order);
-    }
+    return response()->json([
+        'data' => $order
+    ]);
+}
+
 
     public function open(OpenOrderRequest $request): OrderResource
     {
@@ -63,4 +67,20 @@ class OrderController extends Controller
 
         return new OrderResource($closed);
     }
+
+    public function removeItem(Order $order, OrderItem $item)
+{
+    if ($item->order_id !== $order->id) {
+        return response()->json([
+            'message' => 'Item does not belong to this order'
+        ], 400);
+    }
+
+    $item->delete();
+
+    return response()->json([
+        'message' => 'Item removed successfully'
+    ]);
+}
+
 }

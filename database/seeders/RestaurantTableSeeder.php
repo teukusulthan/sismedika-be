@@ -9,7 +9,7 @@ class RestaurantTableSeeder extends Seeder
 {
     public function run(): void
     {
-        foreach (range(1, 10) as $number) {
+        foreach (range(1, 12) as $number) {
             RestaurantTable::create([
                 'number' => $number,
                 'status' => 'available',
